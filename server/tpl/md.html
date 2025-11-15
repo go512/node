@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Markdown 代码高亮（可运行版）</title>
+    <!-- 仅保留必要依赖，确保加载稳定 -->
+    <link rel="stylesheet" href="https://cdn.bootcdn.net/ajax/libs/github-markdown-css/5.5.1/github-markdown.min.css">
+    <link rel="stylesheet" href="https://cdn.bootcdn.net/ajax/libs/highlight.js/11.9.0/styles/github.min.css">
+    <script src="https://cdn.bootcdn.net/ajax/libs/marked/4.3.0/marked.min.js"></script>
+    <script src="https://cdn.bootcdn.net/ajax/libs/dompurify/3.0.6/purify.min.js"></script>
+    <script src="https://cdn.bootcdn.net/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+
+    <style>
+        body { margin: 0; padding: 20px; background: #f5f5f5; }
+        .markdown-box { max-width: 1000px; margin: 0 auto; padding: 24px; background: #fff; border-radius: 8px; }
+        pre { padding: 16px !important; overflow-x: auto; }
+        code { font-size: 14px !important; }
+    </style>
+</head>
+<body>
+<div class="markdown-box markdown-body" id="renderTarget"></div>
+
+<script>
+    // 1. 简单的 Markdown 测试内容（确保无语法错误）
+    const mdContent = `{{.Content}}`;
+
+    // 2. 简化配置，避免兼容性问题
+    marked.setOptions({
+        gfm: true,
+        breaks: true,
+        highlight: (code, lang) => {
+            // 兼容处理：若语言未识别，直接返回原代码
+            try {
+                return lang && hljs.getLanguage(lang)
+                    ? hljs.highlight(code, { language: lang }).value
+                    : code;
+            } catch (e) {
+                return code;
+            }
+        }
+    });
+
+    // 3. 简化渲染逻辑，直接执行
+    (function render() {
+        const html = marked.parse(mdContent);
+        const safeHtml = DOMPurify.sanitize(html);
+        document.getElementById('renderTarget').innerHTML = safeHtml;
+    })();
+</script>
+</body>
+</html>
