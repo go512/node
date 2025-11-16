@@ -10,6 +10,7 @@ func main() {
 	fmt.Println(pop())
 	fmt.Println(pop())
 	fmt.Println(sortA())
+	fmt.Println(isValid("[]{}"))
 }
 
 // 用两个栈实现一个队列，先进先出，push插入，pop删除
@@ -65,4 +66,30 @@ func sortA() []int {
 	}
 
 	return stackA
+}
+
+// 3、有效的括号，用右边的映射，左边的入栈
+// ()[]{}
+func isValid(s string) bool {
+	//创建映射关系，右括号对应左括号
+	pairs := map[byte]byte{
+		')': '(',
+		']': '[',
+		'}': '{',
+	}
+
+	//使用切片模拟栈
+	stack := []byte{}
+	for _, char := range s {
+		if left, ok := pairs[byte(char)]; ok {
+			if len(stack) == 0 || stack[len(stack)-1] != left {
+				return false
+			}
+			stack = stack[:len(stack)-1]
+		} else {
+			stack = append(stack, byte(char))
+		}
+	}
+
+	return len(stack) == 0
 }
