@@ -5,12 +5,8 @@ type ListNode struct {
 	Next *ListNode
 }
 
-func main() {
-
-}
-
-//1、删除有序列表中重复的元素
-//给出的链表为  1→1→2,返回 1→2
+// 1、删除有序列表中重复的元素
+// 给出的链表为  1→1→2,返回 1→2
 func deleteDup(head *ListNode) *ListNode {
 	if head == nil {
 		return head
@@ -28,6 +24,6 @@ func deleteDup(head *ListNode) *ListNode {
 		}
 		fast = fast.Next
 	}
-	
+
 	return head
 }
