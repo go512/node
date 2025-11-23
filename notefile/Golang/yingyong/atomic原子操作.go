@@ -1,4 +1,4 @@
-package 应用
+package yingyong
 
 import (
 	"fmt"

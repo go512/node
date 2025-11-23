@@ -19,3 +19,6 @@
 1、单个 Partition 内的消息严格按发送顺序存储（FIFO），但跨 Partition 不保证全局顺序；
 2、每个 Partition 对应磁盘上的一个日志文件，消息以追加方式写入
 3、Partition 数量决定了 Topic 的最大并行处理能力（消费者数量 ≤ Partition 数量）。
+### kafka丢失数据解决方案
+1、producer 把消息发送给 broker，因为网络抖动，消息没有到达 broke
+解决方案：producer 设置 acks 参数，消息同步到 master 之后返回 ack 信号
