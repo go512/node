@@ -17,3 +17,8 @@ subgraph loop
     subscribe -.其余事件.-> publish[投递到kafka对应事件topic]
 end
 ```
+
+
+```shell
+cd server && go run .
+```
