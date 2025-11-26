@@ -1,0 +1,31 @@
+version: "3.8"
+services:
+  # MySQL服务
+  mysql:
+    image: mysql:8.0 #mysql 镜像 8.0版本
+    container_name: mysql8 #容器名称
+    restart:  always #重启策略 （no默认值，容器退出时不自动重启，always，容器总是自动重启）
+    ports:
+      - "3306:3306" #端口映射： 宿主机端口:容器端口
+    entrypoint:
+      - "mysqld" #基础写法
+      - "--character-set-server=utf8mb4"
+    environment: #引用环境变量，需要在当前目录下新建.env文件
+      MYSQL_ROOT_PASSWORD: 123456  #环境变量传递给entrypoint 需要修改成${MYSQL_ROOT_PWD}
+      MYSQL_CHARACTER_SET_SERVER: utf8mb4  # 环境变量传递给entrypoint
+      MYSQL_COLLATION_SERVER: utf8mb4_unicode_ci
+      MYSQL_USER: root
+      #MYSQL_PASSWORD: 123456 //普通用户密码，在环境变量做了修改
+      MYSQL_DATABASE: test
+      MYSQL_INITDB_SKIP_TZINFO: "1"  #跳过时区配置
+    volumes:
+      #数据持久化：将容器内的数据目录挂载在宿州机器指定的目录
+      - ./Public/mysql/data:/var/lib/mysql
+      - ./Public/mysql/logs:/var/log/mysql
+      - ./Public/mysql/conf:/etc/mysql/conf.d/my.cnf
+    networks:
+      - mysql-network #自定义网络（可选，用于容器通信）
+#自定义网络
+networks:
+  mysql-network:
+    driver: bridge

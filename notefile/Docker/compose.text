@@ -1,0 +1,35 @@
+    /*
+    |--------------------------------------------------------------------------
+    | compse-file
+    |--------------------------------------------------------------------------
+    | compose-file是一个yaml文件，默认文件名为compose.yaml，兼容compose.yml，
+    | 也向后兼容docker-compose.yaml和docker-compose.yml
+    */
+
+    docker compose up -d 是启动docker compose 的核心服务 (-d（--detach）：后台运行容器（不占用当前终端），执行后终端可继续操作)
+    docker compose down 是停止docker compose 的核心服务
+    docker compose ps 是查看docker compose 的核心服务状态
+    docker compose logs 是查看docker compose 的核心服务日志
+    docker compose build 是构建docker compose 的核心服务
+    docker compose stop 是停止docker compose 的核心服务
+    docker compose start 是启动docker compose 的核心服务
+    docker compose restart 是重启docker compose 的核心服务
+    docker compose rm 是删除docker compose 的核心服务
+    docker compose exec 是进入docker compose 的核心服务
+    docker compose up -d --build 是启动docker compose 的核心服务并构建
+
+    docker compose up -d -f docker-compose.yml 是启动docker compose 的核心服务并指定yaml文件
+    docker compose up -d -f docker-compose.yml -f docker-compose.dev.yml 是启动docker compose 的核心服务并指定多个yaml文件
+
+   如果docker-compose.yaml 在当前目录下，可直接执行 docker compose up -d
+   # 查看服务状态（仅显示 Compose 管理的容器）
+   docker compose ps
+
+   # 查看所有运行中的容器（包括非 Compose 启动的）
+   docker ps
+
+   # 查看容器日志（排查启动失败）
+   docker compose logs  # 查看所有服务日志
+   docker compose logs mysql  # 仅查看 MySQL 日志
+   docker compose logs redis  # 仅查看 Redis 日志
+
