@@ -22,3 +22,25 @@ docker-compose 默认使用当前用户，但是当前用户没有权限，所�
 解决：
 # 1. 创建Docker数据卷（非本地目录）
 docker volume create mysql-data
+
+
+# 进入Kafka容器
+docker exec -it kafka-local /bin/bash
+# 查看Java进程（Kafka基于Java运行）
+ps aux | grep kafka
+# 创建topic 无 zookeeper
+docker exec -it kafka-kraft kafka-topics \
+  --create \
+  --topic test-topic \
+  --bootstrap-server localhost:9092 \
+  --partitions 1 \
+  --replication-factor 1
+#生产
+docker exec -it kafka-kraft kafka-console-producer \
+  --topic test-topic \
+  --bootstrap-server localhost:9092
+  #消费
+docker exec -it kafka-kraft kafka-console-consumer \
+  --topic test-topic \
+  --bootstrap-server localhost:9092 \
+  --from-beginning
