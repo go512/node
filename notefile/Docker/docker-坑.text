@@ -1,0 +1,24 @@
+docker-compose -f ./redis_mysql/compose.yaml up -d
+// -f 指定yaml文件  up: 启动  -d 后台运行 也可以指定多个文件（-f xxx.yaml -f xxx.yaml）
+
+docker-compose -f ./redis_mysql/compose.yaml down
+# down 停止所有容器
+#down：Docker Compose 的停止并清理命令
+#删除这些容器；删除配置中定义的网络（但不会默认删除数据卷和镜像）。 若需同时删除数据卷，需加-v参数：
+docker-compose -f ./redis_mysql/compose.yaml down -v
+#仅停止容器可使用
+docker-compose stop
+
+docker-compose logs -f mysql  # 实时查看mysql日志
+docker-compose logs --tail 100 web  # 查看web服务最后100行日志
+docker-compose rm mysql  # 删除已停止的mysql容器
+docker-compose down --volumes --remove-orphans  # 清理所有资源
+
+报错：权限错
+chown: changing ownership of '/var/lib/mysql': Operation not permitted
+
+原因：
+docker-compose 默认使用当前用户，但是当前用户没有权限，所以会报错。
+解决：
+# 1. 创建Docker数据卷（非本地目录）
+docker volume create mysql-data
