@@ -1,5 +1,5 @@
-vendor/
- .idea*
- .idea/
+*vendor
+ *idea
 .vscode/
 .env
+output
