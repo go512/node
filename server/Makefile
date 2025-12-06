@@ -12,5 +12,14 @@ LDFLAGS := -X main.Version=$(VERSION) -X main.BuildTime=$(BUILD_TIME) -X main.Co
 # 可选：添加编译优化（移除调试信息，减小二进制体积）
 LDFLAGS += -s -w
 
+
 outdir:
 	mkdir -p ./output/
+
+version:
+	@echo "Version: $(VERSION)"
+	@echo "BuildTime: $(BUILD_TIME)"
+	@echo "Commit: $(COMMIT)"
+
+build: outdir
+	go build -ldflags "$(LDFLAGS)" -o ./output/ ./cmd
