@@ -22,3 +22,8 @@ end
 ```shell
 cd server && go run .
 ```
+
+###deamon
+```shell
+(cd ./server/cmd && go run . kafka_consumer -c ./config.yaml)
+```
