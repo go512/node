@@ -1,0 +1,8 @@
+[kafka]
+brokers = ['b-1.test.eaj11p.c4.kafka.us-west-2.amazonaws.com:9096']
+username = 'aws-kafka'
+password = '3HPiI0CYT1RQDCl9TOrs'
+server_name = ''
+topic_prefix = 'betradar_'
+partition = 4
+replication = 2

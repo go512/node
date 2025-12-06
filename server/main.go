@@ -4,11 +4,13 @@ import (
 	"context"
 	"embed"
 	"fmt"
+	"github.com/segmentio/kafka-go"
 	"html/template"
 	"io"
 	"log"
 	"net/http"
 	"net/url"
+	"node/pkg/kafkaPkg"
 	"os"
 	"os/signal"
 	"strings"
@@ -77,7 +79,11 @@ func main() {
 	//home
 	http.HandleFunc("/{$}", home)
 	http.HandleFunc("/view/{path}", view)
-	server := &http.Server{Addr: ":1024"}
+	http.HandleFunc("/md/kafka", func(writer http.ResponseWriter, request *http.Request) {
+		kafkaPkg.Publish("kafka_topic", []byte("hello kafka"), []byte("hello kafka"), []kafka.Header{{Key: "type", Value: []byte("test")}})
+	})
+	server := &http.Server{Addr: ":8024"}
+	kafkaPkg.InitKafka(nil)
 	go func() {
 		if err := server.ListenAndServe(); err != nil {
 			log.Fatal("ListenAndServe.err:", err)
