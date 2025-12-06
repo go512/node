@@ -7,6 +7,7 @@
 
 # 忽略 Go 依赖目录（若团队使用 go mod 而非 vendor 提交依赖）
 vendor/
+output/
 
 # 忽略编译产物
 *.exe
