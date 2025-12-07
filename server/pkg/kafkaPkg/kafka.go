@@ -6,7 +6,7 @@ var (
 	gProducer *kfProducer
 )
 
-func InitKafka(cfg *conf.Config) {
+func InitKafka(cfg *conf.KafkaConfig) {
 	if cfg == nil || len(cfg.Brokers) == 0 {
 		cfg = conf.Default()
 	}

@@ -1,6 +1,6 @@
 package conf
 
-type Config struct {
+type KafkaConfig struct {
 	Brokers []string `json:"brokers"`
 
 	// stl
@@ -17,8 +17,8 @@ type Config struct {
 	AutoCreateTopic bool `json:"auto_create_topic"` //默认在broker 开启自动创建，否则需要手动创建
 }
 
-func Default() *Config {
-	return &Config{
+func Default() *KafkaConfig {
+	return &KafkaConfig{
 		Brokers: []string{"localhost:9092"},
 
 		Partition:   1,

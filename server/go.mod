@@ -3,6 +3,7 @@ module node
 go 1.25.1
 
 require (
+	github.com/BurntSushi/toml v1.5.0
 	github.com/segmentio/kafka-go v0.4.49
 	github.com/urfave/cli/v2 v2.27.7
 )

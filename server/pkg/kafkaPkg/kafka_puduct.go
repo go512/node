@@ -13,19 +13,19 @@ import (
 )
 
 type kfProducer struct {
-	cfg     conf.Config
+	cfg     conf.KafkaConfig
 	writers map[string]*kafka.Writer
 	mu      sync.Mutex
 }
 
-func NewKfProducer(cfg *conf.Config) *kfProducer {
+func NewKfProducer(cfg *conf.KafkaConfig) *kfProducer {
 	return &kfProducer{
 		cfg:     *cfg,
 		writers: make(map[string]*kafka.Writer),
 	}
 }
 
-func NewKafkaWriter(topic string, cfg *conf.Config) (w *kafka.Writer, err error) {
+func NewKafkaWriter(topic string, cfg *conf.KafkaConfig) (w *kafka.Writer, err error) {
 	fmt.Println("NewKafkaWriter", cfg)
 	//可选设置回调函数
 	completionFunc := func(msgs []kafka.Message, err error) {
@@ -200,7 +200,7 @@ func Publish(topic string, key, value []byte, headers []kafka.Header) error {
 	return gProducer.publish(topic, key, value, headers)
 }
 
-func NewKafkaDialer(cfg *conf.Config) (*kafka.Dialer, error) {
+func NewKafkaDialer(cfg *conf.KafkaConfig) (*kafka.Dialer, error) {
 	var err error
 	dialer := &kafka.Dialer{
 		Timeout:   10 * time.Second,

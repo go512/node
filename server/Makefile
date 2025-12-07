@@ -21,5 +21,11 @@ version:
 	@echo "BuildTime: $(BUILD_TIME)"
 	@echo "Commit: $(COMMIT)"
 
+#设置代理
+proxy:
+	go env -w GOPROXY=https://goproxy.cn,https://goproxy.io,https://mirrors.aliyun.com/goproxy/,direct   #[翻墙需要]设置代理
+	go env -w GOPRIVATE=*.qutoutiao.net           #[翻墙需要]忽略公司内部包
+
+
 build: outdir
 	go build -ldflags "$(LDFLAGS)" -o ./output/ ./cmd

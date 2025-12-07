@@ -6,3 +6,15 @@ server_name = ''
 topic_prefix = 'betradar_'
 partition = 4
 replication = 2
+group = 'consumer_group_01'  # 消费者组 ID
+
+[mysql]
+    [mysql.event]
+        host = '127.0.0.1'
+        port = 3306
+        user = 'root'
+        password = '123456'
+        db = 'betradar'
+        max_open_conns = 2
+        ssl_mode = 'disable' # disable | require ｜ verify-ca
+        # ssl_root_cert = '/path/to/redshift-ca.pem'
