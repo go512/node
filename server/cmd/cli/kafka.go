@@ -7,9 +7,6 @@ import (
 	"log"
 	"node/conf"
 	"node/pkg/kafkaPkg"
-	"os"
-	"os/signal"
-	"syscall"
 )
 
 func kafkaCommand() *cli.Command {
@@ -30,15 +27,17 @@ func kafkaCommand() *cli.Command {
 			kafkaPkg.InitKafka(&config.Kafka)
 			log.Println("开始订阅 topic: kafka_topic")
 			// 传入空字符串，使用配置文件中的 Group
-			kafkaPkg.Subscribe(ctx.Context, "kafka_topic", "group_01", Fun)
+			//kafkaPkg.Subscribe(ctx.Context, "kafka_topic", "group_01", Fun)
 
-			//manager := kafkaPkg.NewMultiTopicConsumerManager()
-			//err = manager.Subscribe(&config.Kafka, "kafka_topic", "group_01", Fun)
-			//log.Println("xx err %+v", err)
-			//manager.Start()
-			quit := make(chan os.Signal, 1)
-			signal.Notify(quit, syscall.SIGINT, syscall.SIGTERM, syscall.SIGQUIT)
-			<-quit
+			manager := kafkaPkg.NewMultiTopicConsumerManager()
+			err = manager.Subscribe(&config.Kafka, "kafka_topic", "group_01", Fun)
+			log.Println("xx err %+v", err)
+			manager.Start()
+
+			//quit := make(chan os.Signal, 1)
+			//signal.Notify(quit, syscall.SIGINT, syscall.SIGTERM, syscall.SIGQUIT)
+			//<-quit
+
 			return nil
 		},
 	}
