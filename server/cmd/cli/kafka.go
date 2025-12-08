@@ -30,8 +30,16 @@ func kafkaCommand() *cli.Command {
 			//kafkaPkg.Subscribe(ctx.Context, "kafka_topic", "group_01", Fun)
 
 			manager := kafkaPkg.NewMultiTopicConsumerManager()
-			err = manager.Subscribe(&config.Kafka, "kafka_topic", "group_01", Fun)
-			log.Println("xx err %+v", err)
+			err = manager.AddConsumer(&config.Kafka, "kafka_topic", "group_01", 2, func(msg *kafka.Message) error {
+				log.Printf("[Topic1] 收到消息: %s", string(msg.Value))
+				err := Fun(msg)
+				log.Printf("收到消息: topic=%s, partition=%d, offset=%d, key=%s, value=%s err:%+v",
+					msg.Topic, msg.Partition, msg.Offset, string(msg.Key), string(msg.Value), err)
+				return nil
+			})
+			if err != nil {
+				log.Fatal("添加 topic1 消费者失败:", err)
+			}
 			manager.Start()
 
 			//quit := make(chan os.Signal, 1)
@@ -46,5 +54,6 @@ func kafkaCommand() *cli.Command {
 func Fun(msg *kafka.Message) error {
 	log.Printf("收到消息: topic=%s, partition=%d, offset=%d, key=%s, value=%s",
 		msg.Topic, msg.Partition, msg.Offset, string(msg.Key), string(msg.Value))
+	log.Printf("入库操作[Topic1] 响应消息: %s", string(msg.Value))
 	return nil
 }
