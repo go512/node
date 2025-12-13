@@ -3,6 +3,7 @@ package pkg
 import (
 	"context"
 	"fmt"
+	_chan "node/pkg/chann"
 	"testing"
 	"time"
 )
@@ -24,4 +25,11 @@ func TestName(t *testing.T) {
 			fmt.Println("超时了")
 		}
 	}
+}
+
+func TestNamevv2(t *testing.T) {
+	_chan.SliceSplit([]int{1, 2, 3, 4, 5, 6, 7, 8, 9, 10}, 3)
+	//_chan.HandleMatchStatusChange()
+
+	_chan.ProcessInParallel([]int{1, 2, 3, 4, 5, 6, 7, 8, 9, 10}, 3, func(sub []int) { fmt.Println("处理块：", sub) })
 }

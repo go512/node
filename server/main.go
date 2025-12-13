@@ -11,6 +11,7 @@ import (
 	"net/http"
 	"net/url"
 	"node/pkg/kafkaPkg"
+	"node/pkg/qlog"
 	"os"
 	"os/signal"
 	"strings"
@@ -41,6 +42,8 @@ func init() {
 		}
 	}
 
+	qlog.Info("应用启动成功")
+
 	parseTemplate := func(name string) (t *template.Template, err error) {
 		t, err = template.ParseFS(tpl, "tpl/"+name)
 		if err != nil {
@@ -64,6 +67,7 @@ func init() {
 	notePath = exPath[:strings.LastIndex(exPath, "/server")] + "/notefile"
 	prefixLen = len(notePath) + 1
 	fmt.Println("notePath:", notePath, "prefixLen:", prefixLen)
+	qlog.WithField("notePath", notePath).Info("应用启动成功")
 
 	load()
 	go func() {
