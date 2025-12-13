@@ -31,5 +31,14 @@ func TestNamevv2(t *testing.T) {
 	_chan.SliceSplit([]int{1, 2, 3, 4, 5, 6, 7, 8, 9, 10}, 3)
 	//_chan.HandleMatchStatusChange()
 
+	go _chan.CronTasks(1, func() {
+		_chan.Handle("A_task", 2)
+	})
+
+	go _chan.CronTasks(1, func() {
+		_chan.Handle("B_task", 4)
+	})
+
 	_chan.ProcessInParallel([]int{1, 2, 3, 4, 5, 6, 7, 8, 9, 10}, 3, func(sub []int) { fmt.Println("处理块：", sub) })
+	select {}
 }
