@@ -12,7 +12,7 @@ func LoopLimit() {
 		for range tick {
 			select {
 			case limit <- struct{}{}:
-				//default:
+			default:
 			}
 		}
 	}()
@@ -32,6 +32,8 @@ func CronTasks(second int, fn func()) {
 		for range ticker {
 			select {
 			case limit <- struct{}{}:
+			default:
+
 			}
 		}
 	}()

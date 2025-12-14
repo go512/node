@@ -25,7 +25,7 @@ func HandleMatchStatusChange() {
 	doneCh := make(chan struct{})
 	go func() {
 		for data := range dataCh {
-			fmt.Println("---- %s", data.MatchId)
+			fmt.Println("---- ", data.MatchId)
 		}
 		// 所有goroutine完成后关闭doneCh通道
 		close(doneCh)
