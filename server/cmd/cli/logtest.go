@@ -14,8 +14,8 @@ func logCommand() *cli.Command {
 		Action: func(ctx *cli.Context) error {
 			log.Println("启动 log 消费者...")
 
-			logg := qlog.New()
-			logg.Debug("test log")
+			qlog.Infof("test log")
+			qlog.Errorf("test log 。。。。。")
 			return nil
 		},
 	}

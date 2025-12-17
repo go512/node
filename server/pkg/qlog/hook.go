@@ -50,26 +50,8 @@ func (h *CallerSkipHook) Fire(entry *logrus.Entry) error {
 
 	// 可选：将 caller 信息注入日志字段（方便 JSON 格式解析）
 	entry.Data["caller"] = fmt.Sprintf("%s:%d", file, line)
-	entry.Data["file"] = file
-	entry.Data["line"] = line
+	//entry.Data["file"] = file
+	//entry.Data["line"] = line
 	entry.Data["func"] = funcName
-	return nil
-}
-
-// 自定义BizMetaHook 用于注入业务元信息
-type BizMetaHook struct {
-	ServiceName string
-	Env         string //环境 dev/test/prd
-	Version     string //版本号
-}
-
-func (h *BizMetaHook) Levels() []logrus.Level {
-	return logrus.AllLevels
-}
-
-func (h *BizMetaHook) Fire(entry *logrus.Entry) error {
-	entry.Data["service"] = h.ServiceName
-	entry.Data["env"] = h.Env
-	entry.Data["version"] = h.Version
 	return nil
 }
