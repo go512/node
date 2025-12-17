@@ -1,8 +1,24 @@
 # node
 
 ```mermaid
-flowchart TD
-    A(开始) --> B(结束)
+graph TD
+    Client[客户端] --> LB[负载均衡器 Nginx]
+    LB --> Gateway1[接入层 Gateway 1]
+    LB --> Gateway2[接入层 Gateway 2]
+    LB --> GatewayN[接入层 Gateway N]
+
+    Gateway1 --> Logic[逻辑层 Logic]
+    Gateway2 --> Logic
+    GatewayN --> Logic
+
+    Logic --> Storage[(存储层)]
+    Logic --> MQ[消息队列]
+    Logic --> Cache[分布式缓存]
+
+    Coordinator[协调层 etcd/ZooKeeper] -.->|服务发现| Gateway1
+    Coordinator -.->|服务发现| Gateway2
+    Coordinator -.->|服务发现| GatewayN
+    Coordinator -.->|配置管理| Logic
     
 ```
 
@@ -19,6 +35,7 @@ end
 ```
 
 
+
 ```shell
 cd server && go run .
 ```
@@ -26,4 +43,8 @@ cd server && go run .
 ###deamon
 ```shell
 (cd ./server/cmd && go run . kafka_consumer -c ./../config.toml)
+```
+
+```shell
+(cd ./server/cmd && go run . log_cli -c ./../config.toml)
 ```

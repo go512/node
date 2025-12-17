@@ -30,6 +30,7 @@ func NewApp() *cli.App {
 		},
 		Commands: []*cli.Command{
 			kafkaCommand(),
+			logCommand(),
 		},
 	}
 }
