@@ -17,8 +17,8 @@ type DatabaseConfig struct {
 	Event MysqlDBNode `json:"event" toml:"event" yaml:"event"`
 }
 type Config struct {
-	Kafka KafkaConfig    `json:"kafka" toml:"kafka" yaml:"kafka"`
-	Mysql DatabaseConfig `json:"mysql" toml:"mysql" yaml:"mysql"`
+	Kafka KafkaConfig            `json:"kafka" toml:"kafka" yaml:"kafka"`
+	Mysql map[string]MysqlDBNode `json:"mysql" toml:"mysql" yaml:"mysql"`
 }
 
 func Load(configPath string) (cfg *Config, err error) {

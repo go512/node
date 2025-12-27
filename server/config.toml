@@ -16,3 +16,12 @@ replication = 1
         max_open_conns = 2
         ssl_mode = 'disable' # disable | require ｜ verify-ca
         # ssl_root_cert = '/path/to/redshift-ca.pem'
+    [mysql.sign]
+        host = '127.0.0.1'
+        port = 3306
+        user = 'root'
+        password = '123456'
+        db = 'betradar'
+        max_open_conns = 2
+        ssl_mode = 'disable' # disable | require ｜ verify-ca
+        # ssl_root_cert = '/path/to/redshift-ca.pem'

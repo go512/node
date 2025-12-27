@@ -1,8 +1,10 @@
 package cli
 
 import (
+	"fmt"
 	"github.com/urfave/cli/v2"
 	"log"
+	"node/conf"
 	"node/pkg/qlog"
 )
 
@@ -15,7 +17,16 @@ func logCommand() *cli.Command {
 			log.Println("启动 log 消费者...")
 
 			qlog.Infof("test log")
-			qlog.Errorf("test log 。。。。。")
+			config, err := conf.Load(ctx.String("config"))
+			if err != nil {
+				return fmt.Errorf("加载配置文件失败: %w", err)
+			}
+
+			qlog.Infof("config: %+v", config)
+			for name, v := range config.Mysql {
+				qlog.Infof("mysql: name:=%s  val: %+v", name, v)
+			}
+
 			return nil
 		},
 	}
