@@ -16,7 +16,7 @@ type Config struct {
 	MaxIdleConns         int           `yaml:"max_idle_conns" toml:"max_idle_conns"`                   // 最大空闲连接数，默认 80
 	MaxLifetime          int           `yaml:"max_life_time" toml:"max_life_time"`                     // 空闲连接最大存活时间，默认 600s
 	TraceIncludeNotFound bool          `yaml:"trace_include_not_found" toml:"trace_include_not_found"` // 是否将NotFound error作为错误记录在trace中，默认为否
-
+	DebugSQL             bool          `yaml:"debug_sql" toml:"debug_sql"`
 	//internal
 	mycfg *mysql.Config `yaml:"mycfg" toml:"mycfg"`
 }

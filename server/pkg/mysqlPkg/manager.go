@@ -25,6 +25,47 @@ func NewManager(configs ManagerConfig) *Manager {
 	return mgr
 }
 
+func (mgr *Manager) GetClient(name string) (*Client, error) {
+	return mgr.NewClient(name)
+}
+
+func (mgr *Manager) NewClient(name string) (client *Client, err error) {
+	if mgr == nil {
+		return nil, fmt.Errorf("manager is nil")
+	}
+
+	iface, ok := mgr.clients.Load(name)
+	if ok {
+		client, ok = iface.(*Client)
+		if ok {
+			return client, nil
+		}
+	}
+
+	iface, err, _ = mgr.single.Do(name, func() (interface{}, error) {
+		config, tmpErr := mgr.Config(name)
+		if tmpErr != nil {
+			return nil, tmpErr
+		}
+
+		tmpClient, tmpErr := NewClient(config)
+		if tmpErr != nil {
+			return nil, tmpErr
+		}
+
+		mgr.clients.Store(name, tmpClient)
+
+		return tmpClient, nil
+	})
+
+	if err != nil {
+		return nil, err
+	}
+
+	client, ok = iface.(*Client)
+	return
+}
+
 func (mgr *Manager) Config(name string) (*Config, error) {
 	if mgr == nil || len(name) == 0 {
 		return nil, fmt.Errorf("name is empty")

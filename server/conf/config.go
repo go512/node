@@ -1,6 +1,9 @@
 package conf
 
-import "github.com/BurntSushi/toml"
+import (
+	"github.com/BurntSushi/toml"
+	"node/pkg/mysqlPkg"
+)
 
 var gConfig *Config
 
@@ -18,7 +21,7 @@ type DatabaseConfig struct {
 }
 type Config struct {
 	Kafka KafkaConfig            `json:"kafka" toml:"kafka" yaml:"kafka"`
-	Mysql map[string]MysqlDBNode `json:"mysql" toml:"mysql" yaml:"mysql"`
+	Mysql mysqlPkg.ManagerConfig `json:"mysql" toml:"mysql" yaml:"mysql"`
 }
 
 func Load(configPath string) (cfg *Config, err error) {

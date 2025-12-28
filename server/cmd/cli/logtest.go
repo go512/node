@@ -5,6 +5,7 @@ import (
 	"github.com/urfave/cli/v2"
 	"log"
 	"node/conf"
+	"node/pkg/mysqlPkg"
 	"node/pkg/qlog"
 )
 
@@ -27,6 +28,13 @@ func logCommand() *cli.Command {
 				qlog.Infof("mysql: name:=%s  val: %+v", name, v)
 			}
 
+			mysqlManager := mysqlPkg.NewManager(config.Mysql)
+
+			db, err := mysqlManager.GetClient("default")
+			if err != nil {
+				return fmt.Errorf("获取 mysql 客户端失败: %w", err)
+			}
+			qlog.Infof("db: %+v", db.DB.DryRun)
 			return nil
 		},
 	}
