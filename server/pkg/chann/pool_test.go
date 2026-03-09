@@ -70,3 +70,13 @@ func TestName(t *testing.T) {
 	time.Sleep(5 * time.Second)
 	pool.Stop()
 }
+
+func TestSample(t *testing.T) {
+	//5个工作协程，队列长度100
+	pool := NewPool(5, 10)
+	for i := 0; i < 200; i++ {
+		pool.Add(processFile(fmt.Sprintf("file_%d.txt", i)))
+	}
+
+	pool.Close()
+}
