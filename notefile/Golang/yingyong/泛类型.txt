@@ -10,6 +10,8 @@
 func 函数名[T 约束] (param []T) T {
     //通用逻辑
 }
+func fn[T any] (param []T) T {
+}
 
 // 定义类型约束 允许 int /int64/ float64类型
 type Number interface {

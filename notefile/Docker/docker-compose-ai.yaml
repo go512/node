@@ -1,0 +1,18 @@
+services:
+  openclaw:
+    image: ghcr.io/openclaw/openclaw:latest
+    container_name: openclaw-ai
+    restart: always
+    ports:
+      - "0.0.0.0:18789:18789"
+    volumes:
+      - openclaw-data:/home/node/.openclaw
+    environment:
+      - GATEWAY_BIND=lan
+      - NODE_ENV=production
+      - OPENAI_API_KEY=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
+      - MODEL_PROVIDER=openai
+      - MODEL_NAME=gpt-4o-mini
+#    user: "501:20"
+volumes:
+  openclaw-data:

@@ -1,0 +1,192 @@
+services:
+  #redis 7
+  redis:
+    image: redis:7-alpine
+    container_name: redis-local
+    restart: always
+    ports:
+      - "6379:6379"
+    volumes:
+      #- ./redis.conf:/etc/redis/redis.conf
+      - ./redis-data:/data
+    #command: redis-server /etc/redis/redis.conf
+    command: redis-server --requirepass "123456" --appendonly yes
+    environment:
+      - TZ=Asia/Shanghai
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 10s
+      retries: 5
+ #docker exec -it mysql8 mysql -uroot -p123456
+  mysql:
+    image: mysql:8.0
+    container_name: mysql-local
+    restart: always
+    ports:
+      - "3306:3306"
+    volumes:
+      - ./mysql-data:/var/lib/mysql
+    environment:
+      - MYSQL_ROOT_PASSWORD=123456
+      - MYSQL_DATABASE=test_db
+      - MYSQL_USER=dev
+      - MYSQL_PASSWORD=dev123
+      - TZ=Asia/Shanghai
+    command:
+      --character-set-server=utf8mb4
+      --collation-server=utf8mb4_unicode_ci
+      --default-time_zone='+8:00'
+    #等待mysql就绪再启动dtm
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-uroot", "-p123456"]
+      interval: 10s
+      timeout: 10s
+      retries: 5
+  #DTM主服务
+  dtm:
+    image: yedf/dtm:latest
+    container_name: dtm-local
+    restart: unless-stopped
+    ports:
+      - "36789:36789"
+      - "36790:36790"
+    #依赖两个服务，且必须等健康监测通过才启动dtm
+    depends_on:
+      redis:
+        condition: service_healthy
+      mysql:
+        condition: service_healthy
+    environment:
+        TZ: Asia/Shanghai
+        IS_DOCKER: true
+      # 示例
+        STORE_DRIVER: mysql
+        STORE_HOST: mysql-local
+        STORE_PORT: 3306
+        STORE_USER: root
+        STORE_PASSWORD: 123456
+        STORE_DB: dtm # 这个数据库必须存在，dtm会自动创建表 （只给dtm用）
+#docker exec -it pg-local psql -U root -d test_db
+# psql -h 127.0.0.1 -p 5432 -U postgres -d test_db
+  pg:
+    image: postgres:15
+    container_name: pg-local
+    restart: always
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./pg-data:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_USER=root
+      - POSTGRES_PASSWORD=123456
+      - POSTGRES_DB=test_db
+      - TZ=Asia/Shanghai
+  # emqx 高性能开源 MQTT 消息服务器
+  emqx:
+    image: emqx/emqx:5.8.0
+    container_name: emqx-local
+    restart: always
+    ports:
+      - "18083:18083" #MQTT Web管理界面
+      - "1883:1883" #MQTT TCP
+      - "8883:8883" # MQTT SSL/TLS
+      - "8083:8083" # WebSocket MQTT
+      - "8084:8084" # WebSocket SSL
+    volumes:
+      # 数据持久化，重启不丢失配置/会话
+      - emqx-data:/opt/emqx/data
+      - emqx-log:/opt/emqx/log
+    networks:
+      app_net:
+    environment:
+      TZ: Asia/Shanghai
+      #后台登录账号密码
+      EMQX_DASHBOARD__DEFAULT_USERNAME: admin
+      EMQX_DASHBOARD__DEFAULT_PASSWORD: admin
+          # 最大连接数
+      EMQX_NODE__MAX_CONNECTIONS: 1000
+    healthcheck:
+      test: ["CMD", "emqx_ctl", "status"]
+      interval: 10s
+      timeout: 10s
+      retries: 5
+  etcd:
+    image: quay.io/coreos/etcd:v3.5.15
+    container_name: etcd-local
+    restart: always
+    ports:
+      - "2379:2379"
+      - "2380:2380"
+    environment:
+      ETCD_NAME: etcd-node1
+      ETCD_DATA_DIR: /etcd-data
+      ETCD_LISTEN_CLIENT_URLS: http://0.0.0.0:2379
+      ETCD_ADVERTISE_CLIENT_URLS: http://etcd:2379
+      ETCD_LISTEN_PEER_URLS: http://0.0.0.0:2380
+      ETCD_INITIAL_ADVERTISE_PEER_URLS: http://etcd:2380
+      ETCD_INITIAL_CLUSTER: etcd-node1=http://etcd:2380
+      #ETCD_INITIAL_CLUSTER_STATE: existing
+      ETCD_INITIAL_CLUSTER_STATE: new
+      ETCD_INITIAL_CLUSTER_TOKEN: single-etcd-cluster
+    volumes:
+      - etcd-data:/etcd-data
+    networks:
+      app_net:
+  kafka:
+    image: apache/kafka:3.9.0
+    container_name: kafka-local
+    restart: always
+    ports:
+      - "9092:9092"
+    volumes:
+      - ./kafka-data:/var/lib/kafka/data
+    environment:
+      # KRaft 单机核心配置
+      KAFKA_CLUSTER_ID: "5L6g3nShT-eMCtK--X86sw"
+      KAFKA_NODE_ID: 1
+      KAFKA_PROCESS_ROLES: broker,controller
+      KAFKA_CONTROLLER_QUORUM_VOTERS: 1@kafka:9093
+      KAFKA_CONTROLLER_LISTENER_NAMES: CONTROLLER
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: CONTROLLER:PLAINTEXT,PLAINTEXT:PLAINTEXT
+      KAFKA_LISTENERS: PLAINTEXT://0.0.0.0:9092,CONTROLLER://kafka:9093
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://localhost:9092
+      # 单节点副本配置
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
+      KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
+    networks:
+      app_net:
+  kafka-ui:
+    image: provectuslabs/kafka-ui:latest
+    container_name: kafka-ui-local
+    restart: always
+    # 8080：kafka-ui 容器内部程序固定监听端口（镜像内置写死，不能改）
+    #provectuslabs/kafka-ui 内部服务默认运行在 8080，容器里的 Java 程序只监听 8080。
+    ports:
+      - "9094:8080"
+    environment:
+      # 连接容器内kafka服务名 kafka:9092
+      KAFKA_CLUSTERS_0_NAME: local-kraft
+      KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS: kafka:9092
+      KAFKA_CLUSTERS_0_KRAFTENABLED: "true"
+      # 登录账号
+      KAFKA_UI_AUTH_USERNAME: admin
+      # 登录密码
+      KAFKA_UI_AUTH_PASSWORD: 123456
+    #depends_on 是 docker compose 的服务启动依赖控制配置
+    # kafka-ui 服务启动前，必须先启动名为 kafka 的服务
+    depends_on:
+      - kafka # 依赖上面名为kafka的服务
+    networks:
+      app_net:
+
+# 顶级节点2：定义数据卷
+volumes:
+  emqx-data:
+  emqx-log:
+  etcd-data:
+# 定义网络
+networks:
+  app_net:
+    driver: bridge
