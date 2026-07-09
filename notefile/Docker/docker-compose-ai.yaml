@@ -10,7 +10,7 @@ services:
     environment:
       - GATEWAY_BIND=lan
       - NODE_ENV=production
-      - OPENAI_API_KEY=xxxxxxxxxxxxxxxxhUkVXaoV3Vml_CnpITN3mZ7LgT3BlbkFJilqbb1OSIBhKQBONz--QNH9Z9J2F6DGS10TyK6MrZiLvmzhZscqkISSN43k9ybtxNECHVV6y4A
+      - OPENAI_API_KEY=xxxxxxxxxxxxxxx
       - MODEL_PROVIDER=openai
       - MODEL_NAME=gpt-4o-mini
 #    user: "501:20"
