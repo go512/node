@@ -26,4 +26,6 @@ func TestReplace(t *testing.T) {
 	aa := Encode("sr:match:123456")
 	t.Log(aa)
 	t.Log(Decode(aa))
+
+	Run2()
 }
