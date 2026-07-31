@@ -38,12 +38,12 @@ func TestName(t *testing.T) {
 
 func TestIncludeFunc(t *testing.T) {
 	var oldUser User
-	//db.First(&oldUser, 123)
+	// db.First(&oldUser, 123)
 	oldUser = User{UserName: "李四", Age: 20}
 
 	input := User{UserName: "张三", Age: 20, CreatedAt: time.Now()}
 
-	//自定义函数： 比较新旧值,仅在新值不同非0值时才更新
+	// 自定义函数： 比较新旧值,仅在新值不同非0值时才更新
 	// 注意：此函数是一个闭包，捕获了oldUser的值
 	createIncludeIfChangeFunc := func(old any) ShouldIncludeFunc {
 		oldVal := reflect.ValueOf(old)
@@ -65,4 +65,8 @@ func TestIncludeFunc(t *testing.T) {
 
 	updateMap := StructToUpdateMap(input, createIncludeIfChangeFunc(oldUser))
 	fmt.Println(updateMap)
+}
+
+func TestPlayerName(t *testing.T) {
+	t.Log(Decode("p5ytom3fkj7vazcrgi"))
 }

@@ -1,6 +1,9 @@
 package utils
 
-import "testing"
+import (
+	"fmt"
+	"testing"
+)
 
 func TestId(t *testing.T) {
 	a := "abc"
@@ -28,4 +31,17 @@ func TestReplace(t *testing.T) {
 	t.Log(Decode(aa))
 
 	Run2()
+}
+
+func TestSprint(t *testing.T) {
+	user := struct {
+		Name string `json:"name"`
+		Age  int    `json:"age"`
+	}{
+		Name: "foo",
+		Age:  1,
+	}
+	t.Log(fmt.Sprintf("%v", user.Age))
+	t.Log(fmt.Sprintf("%+v", user)) // {Name:foo Age:1}
+	fmt.Printf("%#v", user)
 }

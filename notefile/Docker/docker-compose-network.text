@@ -1,0 +1,45 @@
+networks:
+  aibet_net:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.24.0.0/16 #制定网段
+
+#列出所有的docker 网络
+docker network ls
+
+查看某个网络内包含哪些容器
+docker network inspect app_net
+
+查看容器使用的那个网络
+docker inspect 容器名 |grep NetworkMode
+
+#测试容器的连通性
+docker exec -it sportsvc ping postgres
+docker exec -it sportsvc telnet postgres 5432
+
+如果多个 compose 服务需要互通：
+统一接入同一个自定义网络（推荐 docker_app_net），yml 配置示例：
+yaml
+networks:
+  docker_app_net:
+    external: true
+
+
+ 创建名称 docker_app_net 子网可选不填 docker自动分配
+ docker network create docker_app_net
+ #指定子网创建（固定网段， 方便防火墙管控）
+ docker network create --subnet=172.28.0.0/16 docker_app_net
+
+
+ 基础删除命令
+ docker network rm 网络名称
+ docker network rm docker_default
+
+查看哪些容器挂载了该网络
+docker network inspect docker_default
+
+#将已存在容器加入指定网络
+docker network connect docker_app_net 容器名
+#将容器从网络断开
+docker network disconnect docker_app_net 容器名
